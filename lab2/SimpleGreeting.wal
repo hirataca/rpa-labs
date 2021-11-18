@@ -1,0 +1,3 @@
+˜defVar --name vName --type String
+inputBox --title "Your Name" --prompt "Hello! Please type in your name." vName=value
+messageBox --title "Simple Greeting" --text "Hello ${vName}! Nice day for some automation :)" --icon "Information" --buttons "OK" --defaultbutton "FirstButton"*	20.12.3.0
