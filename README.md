@@ -1,6 +1,6 @@
 # rpa-labs
 
-![](images/ibm rpa_offering.png)
+![](ibm rpa_offering.png)
 
 This folder contains labs
 
