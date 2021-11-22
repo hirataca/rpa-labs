@@ -1,0 +1,78 @@
+
+	qÏqO9É»Mò—zö%ïhóŒ*defVar --name leads --type DataTable
+defVar --name row_count --type Numeric
+defVar --name column_count --type Numeric
+defVar --name row_iterator --type Numeric --value 1
+defVar --name first_name --type String
+defVar --name last_name --type String
+defVar --name job_title --type String
+defVar --name company --type String
+defVar --name email --type String
+defVar --name phone --type String
+defVar --name client_address --type String
+defVar --name client_city --type String
+defVar --name client_zipcode --type String
+defVar --name interest --type String
+defVar --name followup --type String
+defVar --name client_state --type String
+defVar --name input_queue --type String --value "Sales Lead Processing"
+defVar --name vMessage --type String
+defVar --name vSalesLeadList --type List --innertype String
+defVar --name vRandom --type String
+currentQueueMessage input_queue=queuename vMessage=body
+bindProcessVariables --mappings "customer=${company},customer_state=${client_state},customer_city=${client_city},interest=${interest}"
+delay --timeout "00:00:02"
+goSub --label ExtractVariables
+createRandomText --useuppercaseletters  --uselowercaseletters  --usedigits  --minimumlength 10 --maximumlength 10 vRandom=value
+webStart --name "${vRandom}" --type "Firefox"
+webNavigate --url "http://jk-automation.mybluemix.net"
+// Login
+webSet --value username --selector "XPath" --xpath "/html/body/div[2]/form/div[1]/input" --simulatehuman 
+webSet --value password10 --selector "XPath" --xpath "/html/body/div[2]/form/div[2]/input" --simulatehuman 
+webClick --selector "XPath" --xpath "/html/body/div[2]/form/div[3]/input" --simulatehuman 
+// Select leads
+webWaitElement --selector "XPath" --xpath "/html/body/div/div[1]/div/a[2]" --simulatehuman 
+webClick --selector "XPath" --xpath "/html/body/div/div[1]/div/a[2]" --simulatehuman 
+logMessage --message "First Name: ${first_name}\r\nFollow up: ${followup}" --type "Info"
+// Set sales leads input fields
+goSub --label InsertLeadData
+webClick --selector "XPath" --xpath "//*[@id=\"#bs-top-navbar-collapse-1\"]/ul[2]/li/ul/li[2]/a"
+webClose --name "${vRandom}"
+delay --timeout "00:00:01"
+beginSub --name InsertLeadData
+delay --timeout "00:00:01"
+webSet --value "${first_name}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[1]/div[1]/div/input" --simulatehuman 
+webSet --value "${last_name}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[1]/div[2]/div/input" --simulatehuman 
+webSet --value "${email}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[1]/div[3]/div/input" --simulatehuman 
+webSet --value "${job_title}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[2]/div[1]/div/input" --simulatehuman 
+webSet --value "${company}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[2]/div[2]/div/input" --simulatehuman 
+webSet --value "${phone}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[2]/div[3]/div/input" --simulatehuman 
+webSet --value "${client_address}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[3]/div[1]/div/input" --simulatehuman 
+webSet --value "${client_city}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[3]/div[2]/div/input" --simulatehuman 
+webSet --value "${client_state}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[3]/div[3]/div/input" --simulatehuman 
+webSet --value "${client_zipcode}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[3]/div[4]/div/input" --simulatehuman 
+webSet --value "${interest}" --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[4]/div[1]/div/input" --simulatehuman 
+//webSet --value "${followup}" --selector "CssSelector" --css "body > div > div.col-md-10 > div > div.container-fluid.ng-scope > div:nth-child(1) > div > form > div:nth-child(4) > div:nth-child(2) > div > input" --simulatehuman 
+if --left "${followup}" --operator "Equal_To" --right Yes
+	webClick --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[4]/div[2]/div/input" --simulatehuman 
+endIf
+// Click Submit
+delay --timeout "00:00:01"
+webClick --selector "XPath" --xpath "/html/body/div/div[2]/div/div[2]/div[1]/div/form/div[4]/div[3]/div/input" --simulatehuman 
+delay --timeout "00:00:01"
+endSub
+beginSub --name ExtractVariables
+splitString --text "${vMessage}" --delimiteroption "CustomDelimiter" --customdelimiter "," --count 20 vSalesLeadList=value
+get --collection "${vSalesLeadList}" --index 1 first_name=value
+get --collection "${vSalesLeadList}" --index 2 last_name=value
+get --collection "${vSalesLeadList}" --index 3 job_title=value
+get --collection "${vSalesLeadList}" --index 4 company=value
+get --collection "${vSalesLeadList}" --index 5 email=value
+get --collection "${vSalesLeadList}" --index 6 phone=value
+get --collection "${vSalesLeadList}" --index 7 client_address=value
+get --collection "${vSalesLeadList}" --index 8 client_city=value
+get --collection "${vSalesLeadList}" --index 9 client_state=value
+get --collection "${vSalesLeadList}" --index 10 client_zipcode=value
+get --collection "${vSalesLeadList}" --index 11 interest=value
+get --collection "${vSalesLeadList}" --index 12 followup=value
+endSub"	7h∫Ea"ØBß8ùû?ò•6*	20.12.5.0

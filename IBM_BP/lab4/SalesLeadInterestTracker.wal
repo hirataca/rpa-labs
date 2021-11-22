@@ -1,0 +1,47 @@
+
+	RÚÞ„o}EŠÑnQ¶5—uŽdefVar --name leads --type DataTable
+defVar --name row_count --type Numeric
+defVar --name column_count --type Numeric
+defVar --name row_iterator --type Numeric --value 1
+defVar --name first_name --type String
+defVar --name last_name --type String
+defVar --name job_title --type String
+defVar --name company --type String
+defVar --name email --type String
+defVar --name phone --type String
+defVar --name client_address --type String
+defVar --name client_city --type String
+defVar --name client_zipcode --type String
+defVar --name interest --type String
+defVar --name followup --type String
+defVar --name client_state --type String
+defVar --name vWindow --type Window
+defVar --name vJWindow --type Window
+defVar --name input_queue --type String --value "Interest Tracker Processing"
+defVar --name vMessage --type String
+defVar --name vSalesLeadList --type List --innertype String
+delay --timeout "00:00:01"
+currentQueueMessage input_queue=queuename vMessage=body
+goSub --label ExtractVariables
+launchWindow --executablepath "C:\\IBM RPA\\Apps\\SalesLeadInterestTracker.exe" vWindow=value
+logMessage --message "First Name: ${first_name}\r\nFollow up: ${followup}" --type "Info"
+setValue --value "${email}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/edit[1]"
+setValue --value "${interest}" --setValueType "Automatic" --algorithm "Default" --matchcondition "Equals" --selector "XPath" --xpath "/root/edit[2]"
+click --selector "XPath" --controlsimilarity 100 --xpath "/root/button[1]"
+delay --timeout "00:00:01"
+closeWindow --window ${vWindow}
+beginSub --name ExtractVariables
+splitString --text "${vMessage}" --delimiteroption "CustomDelimiter" --customdelimiter "," --count 20 vSalesLeadList=value
+get --collection "${vSalesLeadList}" --index 1 first_name=value
+get --collection "${vSalesLeadList}" --index 2 last_name=value
+get --collection "${vSalesLeadList}" --index 3 job_title=value
+get --collection "${vSalesLeadList}" --index 4 company=value
+get --collection "${vSalesLeadList}" --index 5 email=value
+get --collection "${vSalesLeadList}" --index 6 phone=value
+get --collection "${vSalesLeadList}" --index 7 client_address=value
+get --collection "${vSalesLeadList}" --index 8 client_city=value
+get --collection "${vSalesLeadList}" --index 9 client_state=value
+get --collection "${vSalesLeadList}" --index 10 client_zipcode=value
+get --collection "${vSalesLeadList}" --index 11 interest=value
+get --collection "${vSalesLeadList}" --index 12 followup=value
+endSub"	¦w[IiÜñC³ŒÐÿ2“*	20.12.5.0
